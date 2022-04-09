@@ -37,6 +37,7 @@ import io.nuls.ledger.model.po.sub.FreezeHeightState;
 import io.nuls.ledger.model.po.sub.FreezeLockTimeState;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,10 @@ public class AccountState extends BaseNulsData {
      */
     private BigInteger totalToAmount = BigInteger.ZERO;
 
+    /**
+     * Unreleased mine balance
+     */
+    private BigInteger mineBalance = BigInteger.ZERO;
 
     /**
      * 账户冻结的资产(高度冻结)
@@ -103,6 +108,16 @@ public class AccountState extends BaseNulsData {
         totalToAmount = totalToAmount.add(value);
     }
 
+    public BigInteger getMineBalance() {
+        return mineBalance;
+    }
+    public void addMineBalance(BigInteger value) {
+        mineBalance = mineBalance.add(value);
+    }
+    public void setMineBalance(BigInteger mineBalance) {
+        this.mineBalance = mineBalance;
+    }
+
     /**
      * 获取账户总金额（含锁定金额）
      *
@@ -112,6 +127,17 @@ public class AccountState extends BaseNulsData {
         return totalToAmount.subtract(totalFromAmount).add(getFreezeTotal());
     }
 
+    /**
+     * 释放一部分挖矿锁仓
+     */
+    public void releaseMineBalance() {
+        if (mineBalance.compareTo(BigInteger.valueOf(100000)) < 0) {
+            return;
+        }
+        BigInteger releaseAmount = (new BigDecimal(mineBalance).multiply(new BigDecimal("0.01"))).toBigInteger();
+        mineBalance = mineBalance.subtract(releaseAmount);
+        addTotalToAmount(releaseAmount);
+    }
 
     @Override
     protected void serializeToStream(NulsOutputStreamBuffer stream) throws IOException {
@@ -119,6 +145,7 @@ public class AccountState extends BaseNulsData {
         stream.writeUint32(latestUnFreezeTime);
         stream.writeBigInteger(totalFromAmount);
         stream.writeBigInteger(totalToAmount);
+        stream.writeBigInteger(mineBalance);
         stream.writeUint32(freezeHeightStates.size());
         for (FreezeHeightState heightState : freezeHeightStates) {
             stream.writeNulsData(heightState);
@@ -135,6 +162,7 @@ public class AccountState extends BaseNulsData {
         this.latestUnFreezeTime = byteBuffer.readUint32();
         this.totalFromAmount = byteBuffer.readBigInteger();
         this.totalToAmount = byteBuffer.readBigInteger();
+        this.mineBalance = byteBuffer.readBigInteger();
         int freezeHeightCount = (int) byteBuffer.readUint32();
         this.freezeHeightStates = new ArrayList<>(freezeHeightCount);
         for (int i = 0; i < freezeHeightCount; i++) {
@@ -167,6 +195,7 @@ public class AccountState extends BaseNulsData {
         //totalFromAmount
         size += SerializeUtils.sizeOfBigInteger();
         //totalToAmount
+        size += SerializeUtils.sizeOfBigInteger();
         size += SerializeUtils.sizeOfBigInteger();
         size += SerializeUtils.sizeOfUint32();
         for (FreezeHeightState heightState : freezeHeightStates) {
@@ -203,6 +232,7 @@ public class AccountState extends BaseNulsData {
         orgAccountState.setLatestUnFreezeTime(this.getLatestUnFreezeTime());
         orgAccountState.setTotalFromAmount(this.getTotalFromAmount());
         orgAccountState.setTotalToAmount(this.getTotalToAmount());
+        orgAccountState.setMineBalance(this.getMineBalance());
         List<FreezeHeightState> heightStateArrayList = new ArrayList<>();
         heightStateArrayList.addAll(this.getFreezeHeightStates());
         orgAccountState.setFreezeHeightStates(heightStateArrayList);
@@ -267,4 +297,10 @@ public class AccountState extends BaseNulsData {
         }
         return false;
     }
+
+    public boolean needReleaseMineBalance() {
+        long todayBegin = NulsDateUtils.getTodayBegin();
+        return latestUnFreezeTime < todayBegin;
+    }
+
 }

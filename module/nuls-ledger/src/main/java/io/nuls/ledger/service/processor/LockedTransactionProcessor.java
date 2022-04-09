@@ -40,7 +40,6 @@ import io.nuls.ledger.storage.Repository;
 import io.nuls.ledger.utils.LedgerUtil;
 import io.nuls.ledger.utils.LoggerUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -108,7 +107,9 @@ public class LockedTransactionProcessor implements TxLockedProcessor {
      * @param hash
      */
     private boolean processToCoinData(CoinTo coin, byte[] nonce, String hash, AccountState accountState, long txTime, String address) {
-        if (coin.getLockTime() < LedgerConstant.MAX_HEIGHT_VALUE && !LedgerUtil.isPermanentLock(coin.getLockTime())) {
+        if (coin.getLockTime() == -2) {
+            accountState.addMineBalance(coin.getAmount());
+        } else if (coin.getLockTime() < LedgerConstant.MAX_HEIGHT_VALUE && !LedgerUtil.isPermanentLock(coin.getLockTime())) {
             //按高度锁定
             FreezeHeightState freezeHeightState = new FreezeHeightState();
             freezeHeightState.setAmount(coin.getAmount());

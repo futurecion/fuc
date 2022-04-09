@@ -25,7 +25,6 @@
  */
 package io.nuls.ledger.service.impl;
 
-import io.nuls.base.protocol.ProtocolGroupManager;
 import io.nuls.core.core.annotation.Autowired;
 import io.nuls.core.core.annotation.Component;
 import io.nuls.core.rpc.util.NulsDateUtils;
@@ -144,6 +143,9 @@ public class FreezeStateServiceImpl implements FreezeStateService {
         BigInteger addHeightAmount = unFreezeLockHeightState(addressChainId, heightList, accountState);
         accountState.addTotalToAmount(addTimeAmount);
         accountState.addTotalToAmount(addHeightAmount);
+        if (accountState.needReleaseMineBalance()) {
+            accountState.releaseMineBalance();
+        }
         return true;
     }
 }
