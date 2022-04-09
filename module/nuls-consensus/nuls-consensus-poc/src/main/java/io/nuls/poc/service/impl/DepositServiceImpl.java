@@ -13,7 +13,6 @@ import io.nuls.core.constant.TxType;
 import io.nuls.core.core.annotation.Autowired;
 import io.nuls.core.core.annotation.Component;
 import io.nuls.core.exception.NulsException;
-import io.nuls.core.model.BigIntegerUtils;
 import io.nuls.core.model.ObjectUtils;
 import io.nuls.core.model.StringUtils;
 import io.nuls.core.parse.JSONUtils;
@@ -180,6 +179,10 @@ public class DepositServiceImpl implements DepositService {
             Transaction depositTransaction = CallMethodUtils.getTransaction(chain,dto.getTxHash());
             if (depositTransaction == null) {
                 return Result.getFailed(ConsensusErrorCode.TX_NOT_EXIST);
+            }
+            long currentTimeSeconds = NulsDateUtils.getCurrentTimeSeconds();
+            if (depositTransaction.getTime() + ConsensusConstant.DEPOST_LOCK_TIME > currentTimeSeconds) {
+                return Result.getFailed(ConsensusErrorCode.ERROR_UNLOCK_TIME);
             }
             CoinData depositCoinData = new CoinData();
             depositCoinData.parse(depositTransaction.getCoinData(), 0);

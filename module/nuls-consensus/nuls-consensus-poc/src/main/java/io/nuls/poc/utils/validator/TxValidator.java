@@ -16,6 +16,7 @@ import io.nuls.core.exception.NulsException;
 import io.nuls.core.model.ArraysTool;
 import io.nuls.core.model.BigIntegerUtils;
 import io.nuls.core.model.StringUtils;
+import io.nuls.core.rpc.util.NulsDateUtils;
 import io.nuls.poc.constant.ConsensusConstant;
 import io.nuls.poc.constant.ConsensusErrorCode;
 import io.nuls.poc.model.bo.Chain;
@@ -213,6 +214,10 @@ public class TxValidator {
         DepositPo depositPo = depositStorageService.get(cancelDeposit.getJoinTxHash(), chain.getConfig().getChainId());
         if (depositPo == null || depositPo.getDelHeight() > 0) {
             throw new NulsException(ConsensusErrorCode.DATA_NOT_EXIST);
+        }
+        long currentTimeSeconds = NulsDateUtils.getCurrentTimeSeconds();
+        if (depositPo.getTime() + ConsensusConstant.DEPOST_LOCK_TIME > currentTimeSeconds) {
+            throw new NulsException(ConsensusErrorCode.ERROR_UNLOCK_TIME);
         }
         //查看from和to中地址是否一样
         CoinData coinData = new CoinData();

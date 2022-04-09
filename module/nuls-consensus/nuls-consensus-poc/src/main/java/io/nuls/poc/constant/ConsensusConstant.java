@@ -189,4 +189,6 @@ public interface ConsensusConstant {
     byte VALUE_OF_ONE_HUNDRED =100;
 
     String SEPARATOR = "_";
+
+    long DEPOST_LOCK_TIME = 31536000;
  }

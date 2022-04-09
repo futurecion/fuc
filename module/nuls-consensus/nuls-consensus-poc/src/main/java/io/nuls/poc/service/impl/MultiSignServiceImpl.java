@@ -2,21 +2,17 @@ package io.nuls.poc.service.impl;
 
 import io.nuls.base.RPCUtil;
 import io.nuls.base.basic.AddressTool;
-import io.nuls.base.basic.NulsByteBuffer;
 import io.nuls.base.basic.TransactionFeeCalculator;
 import io.nuls.base.data.*;
 import io.nuls.base.signture.MultiSignTxSignature;
 import io.nuls.base.signture.P2PHKSignature;
 import io.nuls.base.signture.SignatureUtil;
-import io.nuls.base.signture.TransactionSignature;
 import io.nuls.core.basic.Result;
 import io.nuls.core.constant.TxType;
 import io.nuls.core.core.annotation.Autowired;
 import io.nuls.core.core.annotation.Component;
-import io.nuls.core.crypto.ECKey;
 import io.nuls.core.crypto.HexUtil;
 import io.nuls.core.exception.NulsException;
-import io.nuls.core.exception.NulsRuntimeException;
 import io.nuls.core.log.Log;
 import io.nuls.core.model.StringUtils;
 import io.nuls.core.parse.JSONUtils;
@@ -28,7 +24,10 @@ import io.nuls.poc.model.bo.tx.txdata.Agent;
 import io.nuls.poc.model.bo.tx.txdata.CancelDeposit;
 import io.nuls.poc.model.bo.tx.txdata.Deposit;
 import io.nuls.poc.model.bo.tx.txdata.StopAgent;
-import io.nuls.poc.model.dto.input.*;
+import io.nuls.poc.model.dto.input.CreateMultiAgentDTO;
+import io.nuls.poc.model.dto.input.CreateMultiDepositDTO;
+import io.nuls.poc.model.dto.input.MultiWithdrawDTO;
+import io.nuls.poc.model.dto.input.StopMultiAgentDTO;
 import io.nuls.poc.rpc.call.CallMethodUtils;
 import io.nuls.poc.service.MultiSignService;
 import io.nuls.poc.utils.TxUtil;
@@ -273,6 +272,10 @@ public class MultiSignServiceImpl implements MultiSignService {
             Transaction depositTransaction = CallMethodUtils.getTransaction(chain,dto.getTxHash());
             if (depositTransaction == null) {
                 return Result.getFailed(ConsensusErrorCode.TX_NOT_EXIST);
+            }
+            long currentTimeSeconds = NulsDateUtils.getCurrentTimeSeconds();
+            if (depositTransaction.getTime() + ConsensusConstant.DEPOST_LOCK_TIME > currentTimeSeconds) {
+                return Result.getFailed(ConsensusErrorCode.ERROR_UNLOCK_TIME);
             }
             CoinData depositCoinData = new CoinData();
             depositCoinData.parse(depositTransaction.getCoinData(), 0);
