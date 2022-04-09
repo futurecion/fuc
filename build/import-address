@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ x"$1" = x ]; then
+    echo "error: need privateKey"
+    exit 1
+fi
+
+curl -X POST -H "Content-type: application/json" --data \
+'{"jsonrpc":"2.0","method":"importPriKey","params":[2021, "'"$1"'", "fuc12345"],"id":0}' \
+http://localhost:8004/jsonrpc
