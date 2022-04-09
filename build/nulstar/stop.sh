@@ -28,7 +28,7 @@ if [ -z "${APP_PID}" ]; then
  echo "Nuls wallet not running"
         exit 0
 fi
-echo "stoping"
+echo "stopping"
 for pid in $APP_PID
 do
    stop $pid "`pwd`/Modules/Nulstar/Nulstar/0.1.0/Nulstar"
