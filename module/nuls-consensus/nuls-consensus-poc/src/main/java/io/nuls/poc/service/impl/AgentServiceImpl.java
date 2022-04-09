@@ -15,7 +15,6 @@ import io.nuls.core.core.annotation.Component;
 import io.nuls.core.exception.NulsException;
 import io.nuls.core.exception.NulsRuntimeException;
 import io.nuls.core.log.Log;
-import io.nuls.core.model.BigIntegerUtils;
 import io.nuls.core.model.ObjectUtils;
 import io.nuls.core.model.StringUtils;
 import io.nuls.core.parse.JSONUtils;
@@ -23,7 +22,6 @@ import io.nuls.core.rpc.model.ModuleE;
 import io.nuls.core.rpc.model.message.Response;
 import io.nuls.core.rpc.netty.processor.ResponseMessageProcessor;
 import io.nuls.core.rpc.util.NulsDateUtils;
-import io.nuls.poc.constant.ConsensusConfig;
 import io.nuls.poc.constant.ConsensusConstant;
 import io.nuls.poc.constant.ConsensusErrorCode;
 import io.nuls.poc.model.bo.Chain;
@@ -225,6 +223,10 @@ public class AgentServiceImpl implements AgentService {
             }
             if (agent == null || agent.getDelHeight() > 0) {
                 return Result.getFailed(ConsensusErrorCode.AGENT_NOT_EXIST);
+            }
+            long currentTimeSeconds = NulsDateUtils.getCurrentTimeSeconds();
+            if (agent.getTime() + ConsensusConstant.DEPOST_LOCK_TIME > currentTimeSeconds) {
+                return Result.getFailed(ConsensusErrorCode.ERROR_UNLOCK_TIME);
             }
             stopAgent.setCreateTxHash(agent.getTxHash());
             tx.setTxData(stopAgent.serialize());
