@@ -84,11 +84,11 @@ totalInflationAmount=30000000000000000
 #初始通胀金额
 inflationAmount=4000000000000000
 #通胀开始计算时间(单位:S)
-initTime=TODO
+initTime=1649512800
 #通缩比例(如果没有通缩则设为100)
 deflationRatio=10
-#通缩间隔时间(单位：S) 4Y
-deflationTimeInterval=126144000
+#通缩间隔时间(单位：S) 2D
+deflationTimeInterval=172800
 #创建节点保证金最小值
 depositMin=300000000000
 #创建节点保证金最大值
