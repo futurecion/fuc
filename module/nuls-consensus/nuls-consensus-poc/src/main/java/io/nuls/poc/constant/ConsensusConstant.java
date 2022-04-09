@@ -190,5 +190,5 @@ public interface ConsensusConstant {
 
     String SEPARATOR = "_";
 
-    long DEPOST_LOCK_TIME = 31536000;
+    long DEPOST_LOCK_TIME = 600;
  }
