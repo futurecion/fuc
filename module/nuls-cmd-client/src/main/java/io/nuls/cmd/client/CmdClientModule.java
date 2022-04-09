@@ -59,21 +59,21 @@ public class CmdClientModule extends RpcModule {
 
     @Override
     public boolean doStart() {
-        System.out.println("waiting nuls-wallet base module ready");
+        System.out.print("waiting...");
         ThreadUtils.createAndRunThread("", () -> {
             while (true) {
                 if (this.isDependencieReady()) {
                     return;
                 }
                 waiting++;
-                System.out.print(" " + waiting);
+                System.out.print(".");
                 try {
                     TimeUnit.SECONDS.sleep(1L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (waiting > 59) {
-                    Log.error("waiting nuls-wallet base module ready timeout ");
+                    Log.error("waiting timeout ");
                     System.exit(0);
                 }
             }
@@ -83,7 +83,7 @@ public class CmdClientModule extends RpcModule {
 
     @Override
     public RpcModuleState onDependenciesReady() {
-        System.out.println("nuls-wallet base module ready");
+        System.out.println();
 
         Arrays.stream(this.startArgs).forEach(d->{
             Log.info("arg:{}",d);

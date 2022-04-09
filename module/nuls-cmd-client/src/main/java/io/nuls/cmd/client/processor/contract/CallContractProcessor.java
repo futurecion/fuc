@@ -30,10 +30,7 @@ import io.nuls.base.api.provider.contract.facade.CallContractReq;
 import io.nuls.cmd.client.CommandBuilder;
 import io.nuls.cmd.client.CommandHelper;
 import io.nuls.cmd.client.CommandResult;
-import io.nuls.cmd.client.utils.Na;
 import io.nuls.core.core.annotation.Component;
-
-import java.math.BigInteger;
 
 /**
  * @desription:
@@ -60,7 +57,7 @@ public class CallContractProcessor extends ContractBaseProcessor {
                 .newLine("\t<price>             price (Unit: Na/Gas)    -required")
                 .newLine("\t<contractAddress>   contract address    -required")
                 .newLine("\t<methodName>        the method to call    -required")
-                .newLine("\t<value>             transfer nuls to the contract (Unit: Nuls)    -required")
+                .newLine("\t<value>             transfer fuc to the contract (Unit: FUC)    -required")
                 .newLine("\t[-d methodDesc]        the method description    -not required")
                 .newLine("\t[-r remark]            remark    -not required");
         return builder.toString();

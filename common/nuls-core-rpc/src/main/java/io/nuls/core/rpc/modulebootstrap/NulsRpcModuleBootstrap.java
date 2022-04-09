@@ -8,7 +8,6 @@ import io.nuls.core.thread.ThreadUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 /**
  * @Author: zhoulijun
@@ -91,8 +90,8 @@ public class NulsRpcModuleBootstrap {
                 System.out.println(line);
                 line = reader.readLine();
             }
-            System.out.println("Module:" + System.getProperty("app.name"));
-            System.out.println();
+//            System.out.println("Module:" + System.getProperty("app.name"));
+//            System.out.println();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             System.exit(0);

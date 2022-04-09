@@ -280,7 +280,7 @@ public class CommandHandler implements InitializingBean {
         String command = args[0].trim();
         CommandProcessor processor = PROCESSOR_MAP.get(command);
         if (processor == null) {
-            return CommandResult.getFailed(command + " not a nuls command!");
+            return CommandResult.getFailed(command + " not a valid command!");
         }
         if (length == 2 && CommandConstant.NEED_HELP.equals(args[1])) {
             return CommandResult.getFailed(processor.getHelp());

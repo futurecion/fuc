@@ -27,8 +27,8 @@ package io.nuls.cmd.client.processor.system;
 
 import io.nuls.cmd.client.CommandBuilder;
 import io.nuls.cmd.client.CommandResult;
-import io.nuls.cmd.client.processor.CommandProcessor;
 import io.nuls.cmd.client.processor.CommandGroup;
+import io.nuls.cmd.client.processor.CommandProcessor;
 import io.nuls.core.core.annotation.Component;
 
 /**
@@ -56,7 +56,7 @@ public class ExitProcessor implements CommandProcessor {
 
     @Override
     public String getCommandDescription() {
-        return "exit --exit the nuls command";
+        return "exit --exit the fuc command";
     }
 
     @Override

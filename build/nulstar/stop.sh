@@ -8,7 +8,7 @@ stop(){
     kill $pid > /dev/null 2>&1
     COUNT=0
     while [ $COUNT -lt ${KILL_WAIT_COUNT} ]; do
-        echo -e ".\c"
+#        echo -e ".\c"
         sleep 1
         let COUNT=$COUNT+1
         PID_EXIST=`ps -f -p $pid | grep -w $2`

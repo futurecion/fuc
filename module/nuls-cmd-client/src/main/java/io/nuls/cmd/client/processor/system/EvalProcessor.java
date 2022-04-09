@@ -45,7 +45,7 @@ public class EvalProcessor implements CommandProcessor {
     public boolean argsValidate(String[] args) {
         checkArgsNumber(args,1);
         String command = args[1];
-        checkArgs(commandHandler.hasCommand(command),"not found nuls command!");
+        checkArgs(commandHandler.hasCommand(command),"not found fuc command!");
         return true;
     }
 

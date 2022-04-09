@@ -100,15 +100,15 @@ else
             echoRed "${module} STATE NOT RUNNING"
         fi
     done
-    echo "==================NULS WALLET STATE================="
+    echo "==================NODE STATE================="
     if [ $isReady == 1 ];
     then
         echoGreen "=========================="
-        echoGreen "NULS WALLET IS RUNNING"
+        echoGreen "NODE IS RUNNING"
         echoGreen "=========================="
         exit 0
     else
-        echoRed "NULS WALLET NOT RUNNING"
+        echoRed "NODE NOT RUNNING"
         sleep 2
         clear;
     fi
