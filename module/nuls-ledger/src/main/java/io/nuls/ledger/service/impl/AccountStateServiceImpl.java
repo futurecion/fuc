@@ -146,7 +146,7 @@ public class AccountStateServiceImpl implements AccountStateService {
             }
         }
         //解冻时间高度锁
-        if (accountState.timeAllow()) {
+        if (accountState.timeAllow() || accountState.needReleaseMineBalance()) {
             freezeStateService.recalculateFreeze(addressChainId, accountState);
             accountState.setLatestUnFreezeTime(NulsDateUtils.getCurrentTimeSeconds());
         }

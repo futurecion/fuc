@@ -27,7 +27,6 @@ package io.nuls.core.rpc.util;
 
 import io.nuls.core.exception.NulsException;
 import io.nuls.core.log.Log;
-import io.nuls.core.log.logback.LoggerBuilder;
 import io.nuls.core.model.DateUtils;
 import io.nuls.core.parse.JSONUtils;
 import io.nuls.core.rpc.info.Constants;
@@ -36,8 +35,10 @@ import io.nuls.core.rpc.model.message.Response;
 import io.nuls.core.rpc.netty.processor.ResponseMessageProcessor;
 import io.nuls.core.thread.ThreadUtils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * 时间服务类：用于同步网络模块标准时间
@@ -153,6 +154,13 @@ public class NulsDateUtils extends DateUtils implements Runnable {
 
     public static long getNanoTime() {
         return System.nanoTime() + (offset * 1000000);
+    }
+
+    public static long getTodayBegin() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT-00:00"));
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        return cal.getTimeInMillis() / 1000;
     }
 
 }

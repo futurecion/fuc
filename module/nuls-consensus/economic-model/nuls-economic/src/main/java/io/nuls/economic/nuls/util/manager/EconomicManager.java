@@ -2,7 +2,6 @@ package io.nuls.economic.nuls.util.manager;
 
 import io.nuls.base.basic.AddressTool;
 import io.nuls.base.data.CoinTo;
-import io.nuls.core.constant.CommonCodeConstanst;
 import io.nuls.core.core.annotation.Component;
 import io.nuls.core.exception.NulsException;
 import io.nuls.core.log.Log;
@@ -15,7 +14,10 @@ import io.nuls.economic.nuls.model.bo.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 经济模型管理类
@@ -27,7 +29,7 @@ public class EconomicManager {
     public static Map<Integer, ConsensusConfigInfo> configMap = new HashMap<>();
 
     private static InflationInfo lastVisitInflationInfo = null;
-    
+
     /**
      * 分发共识奖励
      * @param agentInfo        本地打包信息/local agent packing info
@@ -155,9 +157,16 @@ public class EconomicManager {
         for (Map.Entry<String,BigDecimal> entry:depositWeightMap.entrySet()) {
             String address = entry.getKey();
             BigDecimal depositWeight = entry.getValue();
-            BigInteger amount = totalReward.multiply(depositWeight).toBigInteger();
+            BigDecimal earnReward = totalReward.multiply(depositWeight);
+            // 30% release immediately
+            BigInteger amount = earnReward.multiply(new BigDecimal("0.3")).toBigInteger();
             CoinTo coinTo = new CoinTo(AddressTool.getAddress(address),assetChainId,assetId,amount,unlockHeight);
             coinToList.add(coinTo);
+
+            // The rest are deposited into mining locks
+            BigInteger leftAmount = earnReward.subtract(new BigDecimal(amount)).toBigInteger();
+            CoinTo coinTo2 = new CoinTo(AddressTool.getAddress(address),assetChainId,assetId,leftAmount,-2);
+            coinToList.add(coinTo2);
         }
         return  coinToList;
     }
