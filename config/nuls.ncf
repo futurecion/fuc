@@ -99,6 +99,8 @@ commissionMin=1000000000000
 commissionMax=100000000000000
 #单笔委托最低金额
 entrusterDepositMin=10000000000
+commissionRateMin=30
+commissionRateMax=30
 
 [smart-contract]
 #合约视图方法调用最大消耗的Gas
